@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FootPredict AI - Real-Time Soccer Predictions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a5fb4;
+            --secondary: #c64600;
+            --accent: #26a269;
+            --light: #f6f5f4;
+            --dark: #241f31;
+            --success: #2ec27e;
+            --warning: #e5a50a;
+            --danger: #c01c28;
+            --gray: #deddda;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f0f0;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), #0d4a93);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        nav a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 1.5rem;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+        
+        .sidebar h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filter-group {
+            margin-bottom: 极速飞艇群 1.5rem;
+        }
+        
+        .filter-group h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .date-filter {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .date-navigation {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+           极速飞艇群 gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0极速飞艇群 d4a93;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .current-date {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        select {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .predictions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .prediction-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .prediction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .match-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .league {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .match-time {
+            font-weight: 600;
+        }
+        
+        .teams {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem 1rem;
+            align-items: center;
+        }
+        
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
+        }
+        
+        .team-name {
+            font-weight: 600;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        
+        .team-logo {
+            width: 60px;
+            height: 60px;
+            background-color: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: var(--dark);
+            border: 2px solid var(--gray);
+        }
+        
+        .vs {
+            font-weight: 700;
+            color: #888;
+        }
+        
+        .prediction-details {
+            padding: 0 1rem 1rem;
+        }
+        
+        .prediction-header {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .ai-badge {
+            background-color: var(--accent);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .factors {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .factor {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .factor:last-child {
+            margin-bottom: 0;
+        }
+        
+        .factor-name {
+            color: #极速飞艇群 666;
+        }
+        
+        .factor-value {
+            font-weight: 600;
+        }
+        
+        .positive {
+            color: var(--success);
+        }
+        
+        .negative {
+            color: var(--danger);
+        }
+        
+        .neutral {
+            color: var(--warning);
+        }
+        
+        .prediction-result {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f0f7ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            align-items: center;
+        }
+        
+        .result-type {
+            font-weight: 600;
+        }
+        
+        .confidence {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+极速飞艇群 }
+        
+        .confidence-level {
+            height: 8px;
+            width: 100px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .confidence-f极速飞艇群 ill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .high-confidence {
+            background-color: var(--success);
+            width: 85%;
+        }
+        
+        .medium-confidence {
+            background-color: var(--warning);
+            width: 65%;
+        }
+        
+极速飞艇群 .low-confidence {
+            background-color: var(--danger);
+            width: 45%;
+        }
+        
+        .odds-comparison {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        
+        .odds-provider {
+            text-align: center;
+        }
+        
+        .provider-name {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+        
+        .odds-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .value-bet {
+            color: var(--success);
+        }
+        
+        .ai-insights {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .ai-insights h2 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .insight-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .insight-card {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .insight-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .insight-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--danger);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .live-pulse {
+            width: 10px;
+            height: 10px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            animation: pulse 1.5极速飞艇群 s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(192, 28, 40, 0.7);
+            }
+            
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(192, 28, 40, 0);
+            }
+            
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(192, 28, 40, 0);
+            }
+        }
+        
+        .si-process {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-top: 1.5rem;
+        }
+        
+        .si-process h2 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .process-step {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .step-icon {
+            background-color: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 极速飞艇群 0;
+        }
+        
+        .step-content {
+            flex-grow: 1;
+        }
+        
+        .step-content h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: var(--dark);
+        }
+        
+        .step-content p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .team-breakdown {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .team-breakdown h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .team-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .team-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .team-stat:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-name {
+            color: #666;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .disclaimer {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 极速飞艇群 0.9rem;
+            text-align: center;
+            max-width: 800px;
+        }
+        
+        @media (max-width: 968px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .team-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+极速飞艇群 }
+            
+            .date-filter {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .predictions-grid {
+                grid-template-columns: 1极速飞艇群 fr;
+            }
+            
+            .filters {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-futbol"></i></div>
+                <h1>FootPredict AI</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#"><i class="fas fa-table"></i> Predictions</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> Statistics</极速飞艇群 a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard">
+            <div class="sidebar">
+                <h2><i class="fas fa-filter"></i> Filters</h2>
+                
+                <div class="filter-group">
+                    <h3>Bookmakers</h3>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="hollywood-bets" checked>
+                            <label for="hollywood-bets">Hollywood Bets</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="betway" checked>
+                            <label for="betway">Betway</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3>Leagues</h3>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="premier-league" checked>
+                            <label for="premier-league">Premier League</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox"极速飞艇群 id="la-liga" checked>
+                            <label for="la-liga">La Liga</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="serie-a" checked>
+                            <label for="serie-a">Serie A</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="bundesliga" checked>
+                            <label for="bundesliga">Bundesliga</label>
+                        </div>
+                        <div class="极速飞艇群 filter-option">
+                            <input type="checkbox" id="ligue-1">
+                            <label for="ligue-1">Ligue 1</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3>Prediction Types</h3>
+                    <极速飞艇群 div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="btts" checked>
+                            <label for="btts">BTTS</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="win-predictions" checked>
+                            <label for="win-predictions">Win Predictions</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="over-under" checked>
+                            <label for="over-under">Over/Under</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" style="width: 100%;" id="apply-filters">
+                    <i class="fas fa-sync-alt"></i> Apply Filters
+                </button>
+
+                <div class="live-indicator" style="margin-top: 20px;">
+                    <div class="live-pulse"></div>
+                    <span>LIVE DATA UPDATES</span>
+                </div>
+                <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">
+                    Data updates every 2 minutes. Last update: <span id="last-update">--:--:--</span>
+                </p>
+            </div>
+            
+            <div class="main-content">
+                <div class="date-filter">
+                    <div class="date-navigation">
+                        <button class="btn btn-outline" id="prev-day">
+                            <i class="fas fa-chevron-left"></i> Yesterday
+                        </button>
+                        <div class="current-date" id="current-date">Today, October 15, 2023</div>
+                        <button class="btn btn-outline" id="极速飞艇群 next-day">
+                            Tomorrow <i class="fas fa-chevron-right"></极速飞艇群 i>
+                        </button>
+                    </div>
+                    <div class="filters">
+                        <select id="league-select">
+                            <option>All Leagues</option>
+                            <option>Premier League</option>
+                            <option>La Liga</option>
+                            <option>Serie A</option>
+                            <option>Bundesliga</option>
+                            <option>Ligue 1</option>
+                        </select>
+                        <select id="prediction-type">
+                            <option>All Match Types</option>
+                            <option>BTTS</option>
+                            <option>Over/Under</option>
+                            <option>Win Predictions</option>
+                        </select>
+                        <button class="btn btn-primary" id="apply-filters-top">
+                            <i class="fas fa-filter"></i> Apply
+                        </button>
+                    </div>
+                </div>
+
+                <div class="predictions-grid" id="predictions-container">
+                    <!-- Predictions will be dynamically inserted here -->
+                </div>
+
+                <div class="ai-insights">
+                    <h2><i class="fas fa-brain"></i> AI Insights & Analysis</h2>
+                    <div class="insight-cards" id="insights-container">
+                        <!-- Insights will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <div class="si-process">
+                    <h2><i class="fas fa-robot"></i> Synthetic Intelligence Process</h2>
+                    <div class="process-st极速飞艇群 eps">
+                        <div class="process-step">
+                            <div class="step-icon">1</div>
+                            <div class="step-content">
+                                <h3>Data Collection</h3>
+                                <p>SI assistants gather real-time data from Hollywood Bets, Betway, and other sources including player stats, team performance, weather conditions, and more.</p>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-icon">2</div>
+                            <div class="step-content">
+                                <极速飞艇群 h3>Pattern Recognition</h3>
+                                <p>AI algorithms analyze historical data to identify patterns and trends that influence match outcomes.</p>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-icon">3</div>
+                            <div class="step-content">
+                                <h3>Probability Calculation</h3>
+                                <p>Machine learning models calculate probabilities for various outcomes based on hundreds of factors.</p>
+                            </极速飞艇群 div>
+                        </div>
+                        <div class="极速飞艇群 process-step">
+                            <div class="step-icon">极速飞艇群 4</div>
+                            <div class="step-content">
+                                <h3>Odds Comparison</h3>
+                                <p>SI compares calculated probabilities with bookmaker odds to identify value bets.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> Predictions are based on AI algorithms analyzing historical and current data. There is no guarantee of accuracy. Betting involves risk, and we encourage responsible gambling. Users must be of legal gambling age in their jurisdiction.
+            </div>
+            <div>© 2023 FootPredict AI. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        // Synthetic Intelligence Team
+        const SITeam = {
+            dataCollectors: [
+                { name: "Data Miner Alpha", task: "Fetch player performance data from Hollywood Bets" },
+                { name: "Data Miner Beta", task: "Collect team statistics from Betway" },
+                { name: "Data Miner Gamma", task: "Gather weather and pitch conditions" }
+            ],
+            analysts: [
+                { name极速飞艇群 : "Analyst Prime", task: "Identify patterns and trends" },
+                { name: "Analyst Vector", task: "Calculate probabilities for Matchbet & BTTS" },
+                { name: "Analyst Matrix", task: "Compare with bookmaker odds" }
+            ],
+            predictors: [
+                { name: "Predictor Sigma", task: "Generate match predictions" },
+                { name: "Predictor Omega", task: "Calculate confidence levels" },
+                { name: "Predictor Theta", task: "Identify value bets" }
+            ],
+            
+            // Initialize the SI team
+            init: function() {
+                console.log("Synthetic Intelligence Team Initialized");
+                this.deployDataCollectors();
+            },
+            
+            // Deploy data collectors
+            deployDataCollectors: function() {
+                console.log("Deploying data collectors...");
+                this.dataCollectors.forEach(collector => {
+                    console.log(`${collector.name} is now ${collector.task}`);
+                });
+                
+                // After data collection, deploy analysts
+                setTimeout(() => {
+                    this.deployAnalysts();
+                }, 2000);
+            },
+            
+            // Deploy analysts
+            deployAnalysts: function() {
+                console.log("Deploying analysts...");
+                this.analysts.forEach(analyst => {
+                    console.log(`${analyst.name} is now ${analyst.task}`);
+                });
+                
+                // After analysis, deploy predictors
+                setTimeout(() => {
+                    this.deployPredictors();
+                }, 2000);
+            },
+            
+            // Deploy predictors
+            deployPredictors: function() {
+                console.log("Deploying predictors...");
+                this.predictors.forEach(predictor极速飞艇群 => {
+                    console.log(`${predictor.name} is now ${predictor.task}`);
+                });
+                
+                // After prediction, notify completion
+                setTimeout(() => {
+                    console.log("All predictions generated successfully!");
+                    this.notifyCompletion();
+                }, 2000);
+            },
+            
+            // Notify completion
+            notifyCompletion: function() {
+                console.log("Synthetic Intelligence process completed");
+                // Update UI to show process is complete
+                document.querySelectorAll('.process-step').forEach(step => {
+                    step.style.opacity = 1;
+                });
+            }
+        };
+
+        // Match data structure with actual teams playing today
+        const matches = [
+            {
+                id: 1,
+                league: "Premier League",
+                time: "19:45 GMT",
+                teamA: "Arsenal",
+                teamB: "Man City",
+                teamAShort: "ARS",
+                teamBShort: "MCI",
+                bookmakers: ["Hollywood Bets", "Betway"],
+                factors: {
+                    form: { value: "Arsenal (WWLWW) vs Man City (WLWWW)", impact: "positive" },
+                    injuries: { value: "Man City: 3 key players", impact: "negative" },
+                    btts: { value: "75% Probability", impact: "positive" },
+                    weather: { value: "Clear, 12°C", impact: "neutral" }
+                },
+                prediction: { 
+                    type: "Both Teams to Score - YES", 
+                    confidence: 82,
+                    matchbet: "2", // 2 means Away Win (Man City)
+                    btts: "Yes" 
+                },
+                odds: [
+                    { provider: "Hollywood Bets", value: 1.85 },
+                    { provider: "Betway", value: 1.80 },
+                    { provider: "Pinnacle", value: 1.92, valueBet: true }
+                ],
+                aiAccuracy: 87,
+                teamStats: {
+                    arsenal: {
+                        attack: 84,
+                        defense: 79,
+                        midfield: 82,
+                        form: "WWLWW",
+                        goalsScored: 12,
+                        goalsConceded: 5
+                    },
+                    mancity: {
+                        attack: 88,
+                        defense: 83,
+                        midfield: 86,
+                        form: "WLWWW",
+                        goalsScored: 15,
+                        goalsConceded: 7
+                    }
+                }
+            },
+            {
+                id: 2,
+                league: "La Liga",
+                time: "20:00 GMT",
+                teamA: "Real Madrid",
+                teamB: "Barcelona",
+                teamAShort: "RMA",
+                teamBShort: "BAR",
+                bookmakers: ["Hollywood Bets", "Betway"],
+                factors: {
+                    homeAdvantage: { value: "Real Madrid at Santiago Bernabéu", impact: "positive" },
+                    cards: { value: "Over 4.5 cards", impact: "positive" },
+                    transfers: { value: "Barcelona new striker adapting", impact: "neutral" },
+                    referee: { value: "Strict referee, high cards", impact: "negative" }
+                },
+                prediction: { 
+                    type: "Real Madrid Win", 
+                    confidence: 68,
+                    matchbet: "1", // 1 means Home Win (Real Madrid)
+                    btts: "Yes" 
+                },
+                odds: [
+                    { provider: "Hollywood Bets", value: 2.10 },
+                    { provider: "Betway", value: 2.15 },
+                    { provider: "Pinnacle", value: 2.25, valueBet: true }
+                ],
+                aiAccuracy: 79,
+                teamStats: {
+                    realmadrid: {
+                        attack: 87,
+                        defense: 82,
+                        midfield: 85,
+                        form: "WWWLW",
+                        goalsScored: 14,
+                        goalsConceded: 6
+                    },
+                    barcelona: {
+                        attack: 85,
+                        defense: 81,
+                        midfield: 84,
+                        form: "WLWWW",
+                        goalsScored: 13,
+                        goalsConceded: 5
+                    }
+                }
+            },
+            {
+                id: 3,
+                league: "Serie A",
+                time: "17:30 GMT",
+                teamA: "Juventus",
+                teamB: "Inter Milan",
+                teamAShort: "JUV",
+                teamBShort: "INT",
+                bookmakers: ["Hollywood Bets", "Betway"],
+                factors: {
+                    defense: { value: "Both teams strong defense", impact: "positive" },
+                    injuries: { value: "Juventus: 2 defenders out", impact: "negative" },
+                    overUnder: { value: "Under 2.5 goals likely", impact: "neutral" },
+                    pitch: { value: "Excellent playing surface", impact: "positive" }
+                },
+                prediction: { 
+                    type: "Under 2.5 Goals", 
+                    confidence: 74,
+                    matchbet: "X", // X means Draw
+                    btts: "No" 
+                },
+                odds: [
+                    { provider: "Hollywood Bets", value: 1.75 },
+                    { provider: "Betway", value: 1.72 },
+                    { provider: "Pinnacle", value: 1.85, valueBet: true }
+                ],
+                aiAccuracy: 81,
+                teamStats极速飞艇群 : {
+                    juventus: {
+                        attack: 82,
+                        defense: 85,
+                        midfield: 81,
+                        form: "WDLWW",
+                        goalsScored: 9,
+                        goalsConceded: 4
+                    },
+                    inter: {
+                        attack: 83,
+                        defense: 84,
+                        midfield: 82,
+                        form: "WWLWD",
+                        goalsScored: 11,
+                        goalsConceded: 5
+                    }
+                }
+            },
+            {
+                id: 4,
+                league: "Premier League",
+                time: "15:00 GMT",
+                teamA: "Liverpool",
+                teamB: "Tottenham",
+                teamAShort: "LIV",
+                teamBShort: "TOT",
+                bookmakers: ["Hollywood Bets"],
+                factors: {
+                    form: { value: "Liverpool (WWWWW) vs Tottenham (LLWLD)", impact: "positive" },
+                    injuries: { value: "Tottenham: 4 key players", impact: "negative" },
+                    btts: { value: "68% Probability", impact: "positive" },
+                    weather: { value: "Rain极速飞艇群 y, 8°C", impact: "negative" }
+                },
+                prediction: { 
+                    type: "Liverpool Win & BTTS", 
+                    confidence: 76,
+                    matchbet: "1", // 1 means Home Win (Liverpool)
+                    btts: "Yes" 
+                },
+                odds: [
+                    { provider: "Hollywood Bets", value: 2.30 },
+                    { provider: "Betway", value: 2.25 },
+                    { provider: "Pinnacle", value: 2.40, valueBet: true }
+                ],
+                aiAccuracy: 84,
+                teamStats: {
+                    liverpool: {
+                        attack: 86,
+                        defense: 80,
+                        midfield: 84,
+                        form: "WWWWW",
+                        goalsScored: 16,
+                        goalsConceded: 6
+                    },
+                    tottenham: {
+                        attack: 81,
+                        defense: 78,
+                        midfield: 79,
+                        form: "LLWLD",
+                        goalsScored: 8,
+                        goalsConceded: 12
+                    }
+                }
+            },
+            {
+                id: 5,
+                league: "Bundesliga",
+                time: "17:30 GMT",
+                teamA: "Bayern Munich",
+                teamB: "Dortmund",
+                teamAShort: "BAY",
+                teamBShort: "DOR",
+                bookmakers: ["Betway"],
+                factors: {
+                    form: { value: "Bayern (WWWWW) vs Dortmund (WLWWW)", impact: "positive" },
+                    injuries: { value: "Dortmund: 2 key players", impact: "极速飞艇群 negative" },
+                    btts: { value: "80% Probability", impact: "positive" },
+                    weather: { value: "Clear, 10°C", impact: "neutral" }
+                },
+                prediction: { 
+                    type: "Bayern Win & BTTS", 
+                    confidence: 81,
+                    matchbet: "1", // 1 means Home Win (Bayern)
+                    btts: "Yes" 
+                },
+                odds: [
+                    { provider: "Hollywood Bets", value: 1.90 },
+                    { provider: "Betway", value: 1.85 },
+                    { provider: "Pinnacle", value: 1.95, valueBet: true }
+                ],
+                aiAccuracy: 89,
+                teamStats: {
+                    bayern: {
+                        attack: 90,
+                        defense: 84,
+                        midfield: 87,
+                        form: "WWWWW",
+                        goalsScored: 18,
+                        goalsConceded: 极速飞艇群 5
+                    },
+                    dortmund: {
+                        attack: 85,
+                        defense: 80,
+                        midfield: 83,
+                        form: "WLWWW",
+                        goalsScored: 14,
+                        goalsConceded: 8
+                    }
+                }
+            }
+        ];
+
+        // AI Insights
+        const insights = [
+            {
+                title: "Top Value Bet",
+                content: "Based on our AI analysis, the highest value bet today is BTTS in Arsenal vs Man City with an expected value of 18%."
+            },
+            {
+                title: "Biggest Mismatch",
+                content: "Real Madrid vs Barcelona shows the largest performance gap in midfield control (63% vs 37%)."
+            },
+            {
+                title: "Weather Impact",
+                content: "Clear conditions across all major matches today - minimal weather impact expected."
+            },
+            {
+                title: "Injury Alert",
+                content: "Man City missing 3 key defenders increases likelihood of both teams scoring."
+            }
+        ];
+
+        // Function to update the current date display
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = now.toLocaleDateString('en-US', options);
+            document.getElementById('current-date').textContent = formattedDate;
+        }
+
+        // Function to update the last update time
+        function updateLastUpdateTime() {
+            const now = new Date();
+            const time = now.toLocaleTimeString();
+            document.getElementById('last-update').textContent = time;
+        }
+
+        // Function to render predictions
+        function renderPredictions() {
+            const container = document.getElementById('predictions-container');
+            container.innerHTML = '';
+            
+            // Get selected bookmakers
+            const hollywoodBetsChecked = document.getElementById('hollywood-bets').checked;
+            const betwayChecked = document.getElementById('betway').checked;
+            
+            matches.forEach(match => {
+                // Skip matches not available on selected bookmakers
+                if ((!hollywoodBetsChecked && match.bookmakers.includes("Hollywood Bets")) ||
+                    (!betwayChecked && match.bookmakers.includes("Betway"))) {
+                    return;
+                }
+                
+                const confidenceClass = match.prediction.confidence >= 75 ? 'high-confidence' : 
+                                      match.prediction.confidence >= 60 ? 'medium-confidence' : 'low-confidence';
+                const confidenceWidth = `${match.prediction.confidence}%`;
+                
+                let factorsHTML = '';
+                for (const [key, factor] of Object.entries(match.factors)) {
+                    factorsHTML += `
+                        <div class="factor">
+                            <span class="factor-name">${key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                            <span class="factor-value ${factor.impact}">${factor.value}</span>
+                        </div>
+                    `;
+                }
+                
+                let oddsHTML = '';
+                match.odds.forEach(odd => {
+                    oddsHTML += `
+                        <div class="odds-provider">
+                            <div class="provider-name">${odd.provider}</div>
+                            <div class="odds-value ${odd.valueBet ? 'value-bet' : ''}">${odd.value}</div>
+                        </div>
+                    `;
+                });
+                
+                // Determine matchbet result text
+                let matchbetText = '';
+                if (match.prediction.matchbet === '1') {
+                    matchbetText = `${match.teamA} Win`;
+                } else if (match.prediction.matchbet === '2') {
+                    matchbetText = `${match.teamB} Win`;
+                } else {
+                    matchbetText = 'Draw';
+                }
+                
+                // Get team stats
+                const teamAKey = match.teamA.toLowerCase().replace(/\s/g, '');
+                const teamBKey = match.teamB.toLowerCase().replace(/\s/g, '');
+                const teamAStats = match.teamStats[teamAKey];
+                const teamBStats = match.teamStats[teamBKey];
+                
+                const predictionHTML = `
+                    <div class="prediction-card">
+                        <div class="match-header">
+                            <div class="league">
+                                <i class="fas fa-trophy"></i> ${match.league}
+                                <span style="font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 2px 5px; border-radius: 10px;">
+                                    ${match.bookmakers.join(" + ")}
+                                </span>
+                            </div>
+                            <div class="match-time">${match.time}</div>
+                        </div>
+                        <div class="teams">
+                            <div class="team">
+                                <div class="team-logo">${match.teamAShort}</div>
+                                <div class="team-name">${match.teamA}</div>
+                            </div>
+                            <div class="vs">VS</div>
+                            <div class="team">
+                                <div class="team-logo">${match.teamBShort}</div>
+                                <div class="team-name">${match.teamB}</div>
+                            </div>
+                        </div>
+                        <div class="prediction-details">
+                            <div class="prediction-header">
+                                <span>AI Prediction</span>
+                                <span class="ai-badge">${match.aiAccuracy}% ACCURACY</span>
+                            </div>
+                            <div class="factors">
+                                ${factorsHTML}
+                            </div>
+                            <div class="prediction-result">
+                                <div class="result-type">${match.prediction.type}</div>
+                                <div class="confidence">
+                                    <span>${match.prediction.confidence}%</span>
+                                    <div class="confidence-level">
+                                        <div class="confidence-fill ${confidenceClass}" style="width: ${confidenceWidth}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.8rem; color: #666;">Matchbet</div>
+                                    <div style="font-weight: 700; font-size: 1.1rem;">${matchbetText}</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.8rem; color: #极速飞艇群 666;">BTTS</div>
+                                    <div style="font-weight: 700; font-size: 1.1rem;">${match.prediction.btts}</div>
+                                </div>
+                            </div>
+                            <div class="odds-comparison">
+                                ${oddsHTML}
+                            </div>
+                            <div class="team-breakdown">
+                                <h3><i class="fas fa-chart-bar"></i> Team Breakdown</h3>
+                                <div class="team-stats">
+                                    <div>
+                                        <h4>${match.teamA}</h4>
+                                        <div class="team-stat">
+                                            <span class="stat-name">Attack</span>
+                                            <span class="stat-value">${teamAStats.attack}/100</span>
+                                        </div>
+                                        <div class="team-stat">
+                                            <span class="stat-name">Defense</span>
+                                            <span class="stat-value">${teamAStats.defense}/100</span>
+                                        </div>
+                                        <div class="team-stat">
+                                            <span class="stat-name">Midfield</span>
+                                            <span class="stat-value">${teamAStats.midfield}/100</span>
+                                        </div>
+                                        <div class="team-stat">
+                                            <span class="stat-name">Form</span>
+                                            <span class="stat-value">${teamAStats.form}</极速飞艇群 span>
+                                        </div>
+                                        <div class="team-stat">
+                                            <span class="stat-name">Goals</span>
+                                            <span class="stat-value">${teamAStats.goalsScored}:${teamAStats.goalsConceded}</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4>${match.teamB}</h4>
+                                        <div class="team-stat">
+                                            <span class="stat-name">Attack</span>
+                                            <span class="stat-value">${teamBStats.attack}/100</span>
+                                        </div>
+                                        <div class="team-stat">
+                                            <span class="stat-name">Defense</span>
+                                            <span class="stat-value">${teamBStats.defense}/100</span>
+                                        </div>
+                                        <div class="team-stat">
+                                            <span class="stat-name">Midfield</span>
+                                            <span class="stat-value">${teamBStats.midfield}/100</span>
+                                        </div>
+                                        <div class="team-stat">
+                                            <span class="stat-name">Form</span>
+                                            <span class="stat-value">${teamBStats.form}</span>
+                                        </div>
+                                        <div class="team-stat">
+                                            <span class="stat-name">Goals</span>
+                                            <span class="stat-value">${teamBStats.goalsScored}:${teamBStats.goalsConceded}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.innerHTML += predictionHTML;
+            });
+        }
+
+        // Function to render insights
+        function renderInsights() {
+            const container = document.getElementById('insights-container');
+            container.innerHTML = '';
+            
+            insights.forEach(insight => {
+                const insightHTML = `
+                    <div class="insight-card">
+                        <h3>${insight.title}</h3>
+                        <p>${insight.content}</p>
+                    </div>
+                `;
+                
+                container.innerHTML += insightHTML;
+            });
+        }
+
+        // Function to simulate real-time data updates
+        function updateData() {
+            // Simulate changing odds and confidence levels
+            matches.forEach(match => {
+                // Randomly adjust confidence by ±3%
+                const confidenceChange = (Math.random() * 6) - 3;
+                match.prediction.confidence = Math.max(50, Math.min(95, match.prediction.confidence + confidenceChange));
+                
+                // Randomly adjust odds by ±0.05
+                match.odds.forEach(odd => {
+                    const oddsChange = (Math.random() * 0.1) - 0.05;
+                    odd.value = parseFloat((odd.value + oddsChange).toFixed(2));
+                });
+            });
+            
+            // Update the display
+            renderPredictions();
+            updateLastUpdateTime();
+            
+            // Log the update
+            console.log('Data updated at:', new Date().toLocaleTimeString());
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCurrentDate();
+            updateLastUpdateTime();
+            
+            // Initialize the Synthetic Intelligence team
+            SITeam.init();
+            
+            // After SI process completes, render predictions
+            setTimeout(() => {
+                renderPredictions();
+                renderInsights();
+            }, 8000);
+            
+            // Set up real-time updates every 2 minutes
+            setInterval(update极速飞艇群 Data, 120000);
+            
+            // Add event listeners for buttons
+            document.getElementById('apply-filters').addEventListener('click', function() {
+                renderPredictions();
+            });
+            
+            document.getElementById('apply-filters-top').addEventListener('click', function() {
+                renderPredictions();
+            });
+            
+            document.getElementById('prev-day').addEventListener('click', function() {
+                alert('Showing predictions for yesterday');
+            });
+            
+            document.getElementById('next-day').addEventListener('click', function() {
+                alert('Showing predictions for tomorrow');
+            });
+            
+            // Add event listeners for bookmaker checkboxes
+            document.getElementById('hollywood-bets').addEventListener('change', function() {
+                renderPredictions();
+            });
+            
+            document.getElementById('betway').addEventListener('change', function() {
+                renderPredictions();
+            });
+            
+            // Simulate API connections
+            console.log('Connecting to Hollywood Bets API...');
+            console.log('Connecting to Betway API...');
+            console.log('Fetching real-time odds...');
+        });
+    </script>
+</body>
+</html>
