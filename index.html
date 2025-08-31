@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FootPredict AI - Real-Time Soccer Predictions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a5fb4;
+            --secondary: #c64600;
+            --accent: #26a269;
+            --light: #f6f5f4;
+            --dark: #241f31;
+            --success: #2ec27e;
+            --warning: #e5a50a;
+            --danger: #c01c28;
+            --gray: #deddda;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f0f0;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), #0d4a93);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 4极速飞艇群 px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo h极速飞艇群 1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        nav a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 1.5rem;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+        
+        .sidebar h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-group h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .date-filter {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .date-navigation {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0d4a93;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .current-date {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        select {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .predictions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .prediction-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .prediction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .match-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .league {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .match-time {
+            font-weight: 600;
+        }
+        
+        .teams {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem 1rem;
+            align-items: center;
+极速飞艇群 }
+        
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
+        }
+        
+        .team-name {
+            font-weight: 600;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        
+        .team-logo {
+            width: 60px;
+            height: 60px;
+            background-color: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: var(--dark);
+            border: 2px solid var(--gray);
+        }
+        
+        .vs {
+            font-weight: 700;
+            color: #888;
+        }
+        
+        .prediction-details {
+            padding: 0 1rem 1rem;
+        }
+        
+        .prediction-header {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            display:极速飞艇群 flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .ai-badge {
+            background-color: var(--accent);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .factors {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .factor {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 极速飞艇群 0.5极速飞艇群 rem;
+            font-size: 0.9rem;
+        }
+        
+        .factor:last-child {
+            margin-bottom: 0;
+        }
+        
+        .factor-name {
+            color: #666;
+        }
+        
+        .factor-value {
+            font-weight: 600;
+        }
+        
+        .positive {
+            color: var(--success);
+        }
+        
+        .negative {
+            color: var(--danger);
+        }
+        
+        .neutral {
+            color: var(--warning);
+        }
+        
+        .prediction-result {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f0f7极速飞艇群 ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            align-items: center;
+        }
+        
+        .result-type {
+            font-weight: 600;
+        }
+        
+        .confidence {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .confidence-level {
+            height: 8px;
+           极速飞艇群 width: 100px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            border-radius: 4px;
+极速飞艇群 }
+        
+        .high-confidence {
+            background-color: var(--success);
+            width: 85%;
+        }
+        
+        .medium-confidence {
+            background-color: var(--warning);
+            width: 65%;
+        }
+        
+        .low-confidence {
+            background-color: var(--danger);
+            width: 45%;
+        }
+        
+        .odds-comparison {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        
+        .odds-provider {
+            text-align: center;
+        }
+        
+        .provider-name {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+        
+        .odds-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .value-bet {
+            color: var(--success);
+        }
+        
+        .ai-insights {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .ai-insights h2 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .insight-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .insight-card {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .insight-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .insight-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--danger);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .live-pulse {
+            width: 10px;
+            height: 10px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(192, 28, 40, 0.7);
+            }
+            
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 极速飞艇群 0 10px rgba(192, 28, 40, 0);
+            }
+            
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(192, 28, 40, 0);
+            }
+        }
+        
+        .si-process {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-top: 1.5rem;
+        }
+        
+        .si-process h2 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .process-step极速飞艇群 {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .step-icon {
+            background-color: var(--primary);
+            color: white;
+            width: 30极速飞艇群 px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex-grow: 1;
+        }
+        
+        .step-content h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: var(--dark);
+极速飞艇群 }
+        
+        .step-content p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .team-breakdown {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .team-breakdown h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .team-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .team-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .team-stat:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-name {
+            color: #666;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .disclaimer {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            max-width: 800px;
+        }
+        
+        @media (max-width: 968px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .team-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .date-filter {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .predictions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-futbol"></i></div>
+                <h1>FootPredict AI</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#"><i class="fas fa-table"></极速飞艇群 i> Predictions</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> Statistics</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard">
+            <div class="sidebar">
+                <h2><i class="fas fa-filter"></i> Filters</h2>
+                
+                <div class="filter-group">
+                    <h3>Bookmakers</h3>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="hollywood-bets" checked>
+                            <label for="hollywood-bets">Hollywood Bets</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="betway" checked>
+                            <label for="betway">Betway</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3>Leagues</h3>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="premier-league" checked>
+                            <label for="premier-league">Premier League</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="la-liga" checked>
+                            <label for="la-liga">La Liga</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="serie-a" checked>
+                            <label for="serie-a">Serie A</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="bundesliga" checked>
+                            <label for="bundesliga">Bundesliga</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="ligue-1">
+                            <label for="ligue-1">Ligue 1</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3>Prediction Types</h3>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="btts" checked>
+                            <label for="btts">BTTS</label>
+                        </极速飞艇群 div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="win-predictions" checked>
+                            <label for="win-predictions">Win Predictions</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="over-under" checked>
+                            <label for="over-under">Over/Under</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" style="width: 100%;" id="apply-filters">
+                    <i class="fas fa-sync-alt"></i> Apply Filters
+                </button>
+
+                <div class="live-indicator" style="margin-top: 20px;">
+                    <div class="live-pulse"></极速飞艇群 div>
+                    <span>LIVE DATA UPDATES</span>
+                </div>
+                <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">
+                    Data updates every 2 minutes. Last update: <span id="last-update">--:--:--</span>
+                </p>
+            </div>
+            
+            <div class="main-content">
+                <div class="date-filter">
+                    <div class="date-navigation">
+                        <button class="btn btn-outline" id="prev-day">
+                            <i class="fas fa-chevron-left"></i> Yesterday
+                        </button>
+                        <div class="current-date" id="current-date">Today, October 15, 2023</div>
+                        <button class="btn btn-outline" id="next-day">
+                            Tomorrow <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="filters">
+                        <select id="league-select">
+                            <option>All Leagues</option>
+                            <option>Premier League</option>
+                            <option>La Liga</option>
+                            <option>Serie A</option>
+                            <option>Bundesliga</option>
+                            <option>Ligue 1</option>
+                        </select>
+                        <select id="prediction-type">
+                            <option>All Match Types</极速飞艇群 option>
+                            <option>BTTS</option>
+                            <option>Over/Under</option>
+                            <option>Win Predictions</option>
+                        </select>
+                        <button class="btn btn-primary" id="apply-filters-top">
+                            <极速飞艇群 i class="fas fa-filter"></i> Apply
+                        </button>
+                    </div>
+                </div>
+
+                <div class="predictions-grid" id="predictions-container">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading today's matches from API...</p>
+                    </div>
+                </div>
+
+                <div class="ai-insights">
+                    <h2><i class="fas fa-brain"></i> AI Insights & Analysis</h2>
+                    <div class="insight-cards" id="insights-container">
+                        <!-- Insights will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <div class="si-process">
+                    <h2><i class="fas fa-robot"></i> Synthetic Intelligence Process</h2>
+                    <div class="process-steps">
+                        <div class="process-step">
+                            <div class="极速飞艇群 step-icon">1</div>
+                            <div class="step-content">
+                                <h3>Data Collection</h3>
+                                <p>SI assistants gather real-time data from free football APIs including player stats, team performance, weather conditions, and more.</p>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-icon">2</div>
+                            <div class="step-content">
+                                <h3>Pattern Recognition</h3>
+                                <p>AI algorithms analyze historical data to identify patterns and trends that influence match outcomes.</p>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-icon">3</div>
+                            <div class="step-content">
+                                <h3>Probability Calculation</h3>
+                                <p>Machine learning models calculate probabilities for various outcomes based on hundreds of factors.</p>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-icon">4</div>
+                            <div class="step-content">
+                                <h3>Odds Comparison</h3>
+                                <p>SI compares calculated probabilities with bookmaker odds to identify value bets.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> Predictions are based on AI algorithms analyzing historical and current data. There is no guarantee of accuracy. Betting involves risk, and we encourage responsible gambling. Users must be of legal gambling age in their jurisdiction.
+            </div>
+            <div>© 2023 FootPredict AI. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        // Free Football API configuration
+        const API_CONFIG = {
+            // Using API-FOOTBALL (https://www.api-football.com/)
+            // Note: You need to sign up for a free API key at rapidapi.com
+            url: 'https://api-football-v1.p.rapidapi.com/v3/',
+            options: {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': 'your-api-key-here', // Replace with your actual API key
+                    'X-RapidAPI-Host': 'api-football-v1.p.rapidapi.com'
+                }
+            }
+        };
+
+        // Synthetic Intelligence Team
+        const SITeam = {
+            dataCollectors: [
+                { name: "Data Miner Alpha", task: "Fetch player performance data from API" },
+                { name: "Data Miner Beta", task: "Collect team statistics from API" },
+                { name: "Data Miner Gamma", task: "Gather weather and pitch conditions" }
+            ],
+            analysts: [
+                { name: "Analyst Prime", task: "Identify patterns and trends" },
+                { name: "Analyst Vector", task: "Calculate probabilities for Matchbet & BTTS" },
+                { name: "Analyst Matrix", task: "Compare with bookmaker odds" }
+            ],
+            predictors: [
+                { name: "Predictor Sigma", task: "Generate match predictions" },
+                { name: "Predictor Omega", task: "Calculate confidence levels" },
+                { name: "Predictor Theta", task: "Identify value bets" }
+            ],
+            
+            // Initialize the SI team
+            init: function() {
+                console.log("Synthetic Intelligence Team Initialized");
+                this.deployDataCollectors();
+            },
+            
+            // Deploy data collectors
+            deployDataCollectors: function() {
+                console.log("Deploying data collectors...");
+                this.dataCollectors.forEach(collector => {
+                    console.log(`${collector.name} is now ${collector.task}`);
+                });
+                
+                // After data collection, deploy analysts
+                setTimeout(() => {
+                    this.deployAnalysts();
+                }, 2000);
+            },
+            
+            // Deploy analysts
+            deployAnalysts: function() {
+                console.log("Deploying analysts...");
+                this.analysts.forEach(analyst => {
+                    console.log(`${analyst.name} is now ${analyst.task}`);
+                });
+                
+                // After analysis, deploy predictors
+                setTimeout(() => {
+                    this.deployPredictors();
+                }, 2000);
+            },
+            
+            // Deploy predictors
+            deployPredictors: function() {
+                console.log("Deploying predictors...");
+                this.predictors.forEach(predictor => {
+                    console.log(`${predictor.name} is now ${predictor.task}`);
+                });
+                
+                // After prediction, notify completion
+                setTimeout(() => {
+                    console.log("All predictions generated successfully!");
+                    this.notifyCompletion();
+                }, 2000);
+            },
+            
+            // Notify completion
+            notifyCompletion: function() {
+                console.log("Synthetic Intelligence process completed");
+                // Update UI to show process is complete
+                document.querySelectorAll('.process-step').forEach(step => {
+                    step.style.opacity = 1;
+                });
+            }
+        };
+
+        // Function to fetch today's matches from API
+        async function fetchTodaysMatches() {
+            try {
+                // Get today's date in YYYY-MM-DD format
+                const today = new Date();
+                const todayFormatted = today.toISOString().split('T')[0];
+                
+                // In a real implementation, you would use the API call below
+                // For demonstration, we'll use sample data if API fails
+                /*
+                const response = await fetch(`${API_CONFIG.url}fixtures?date=${todayFormatted}`, API_CONFIG.options);
+                
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+                
+                const data = await response.json();
+                return data.response;
+                */
+                
+                // Simulating API delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Return sample data for demonstration
+                return [
+                    {
+                        fixture: {
+                            id: 1,
+                            date: todayFormatted + 'T19:45:00+00:00',
+                            status: { short: "NS" }
+                        },
+                        league: {
+                            name: "Premier League",
+                            country: "England"
+                        },
+                        teams: {
+                            home: {
+                                id: 42,
+                                name: "Arsenal",
+                                logo: "https://media.api-sports.io/football/teams/42.png"
+                            },
+                            away: {
+                                id: 50,
+                                name: "Manchester City",
+                                logo: "https://media.api-sports.io/football/teams/50.png"
+                            }
+                        },
+                        goals: {
+                            home: null,
+                            away: null
+                        }
+                    },
+                    {
+                        fixture: {
+                            id: 2,
+                            date: todayFormatted + 'T20:00:00+00:00',
+                            status: { short: "NS" }
+                        },
+                        league: {
+                            name: "La Liga",
+                            country: "Spain"
+                        },
+                        teams: {
+                            home: {
+                                id: 541,
+                                name: "Real Madrid",
+                                logo: "https://media.api-sports.io/football/teams/541.png"
+                            },
+                            away: {
+                                id: 529,
+                                name: "Barcelona",
+                                logo: "https://media.api-sports.io/football/teams/529.png"
+                            }
+                        },
+                        goals: {
+                            home: null,
+                            away: null
+                        }
+                    },
+                    {
+                        fixture: {
+                            id: 3,
+                            date: todayFormatted + 'T17:30:00+00:00',
+                            status: { short: "NS" }
+                        },
+                        league: {
+                            name: "Serie A",
+                            country: "Italy"
+                        },
+                        teams: {
+                            home: {
+                                id: 496,
+                                name: "Juventus",
+                                logo: "https://media.api-sports.io/football/teams/496.png"
+                            },
+                            away: {
+                                id: 505,
+                                name: "Inter Milan",
+                                logo: "https://media.api-sports.io/football/teams/505.png"
+                            }
+                        },
+                        goals: {
+                            home: null,
+                            away: null
+                        }
+                    }
+                ];
+            } catch (error) {
+                console.error('Error fetching matches:', error);
+                // Return sample data if API fails
+                return [];
+            }
+        }
+
+        // Function to update the current date display
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = now.toLocaleDateString('en-US', options);
+            document.getElementById('current-date').textContent = formattedDate;
+        }
+
+        // Function to update the last update time
+        function updateLastUpdateTime() {
+            const now = new Date();
+            const time = now.toLocaleTimeString();
+            document.getElementById('last-update').textContent = time;
+        }
+
+        // Function to render predictions
+        function renderPredictions(matches) {
+            const container = document.getElementById('predictions-container');
+            
+            if (matches.length === 0) {
+                container.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>No matches found for today. Using sample data.</p>
+                    </div>
+                `;
+                
+                // Use sample data if API returns no matches
+                matches = [
+                    {
+                        fixture: {
+                            id: 1,
+                            date: new Date().toISOString().split('T')[0] + 'T19:45:00+00:00',
+                        },
+                        league: {
+                            name: "Premier League",
+                        },
+                        teams: {
+                            home: {
+                                name: "Arsenal",
+                            },
+                            away: {
+                                name: "Manchester City",
+                            }
+                        }
+                    },
+                    {
+                        fixture: {
+                            id: 2,
+                            date: new Date().toISOString().split('T')[0] + 'T20:00:00+00:00',
+                        },
+                        league: {
+                            name: "La Liga",
+                        },
+                        teams: {
+                            home: {
+                                name: "Real Madrid",
+                            },
+                            away: {
+                                name: "Barcelona",
+                            }
+                        }
+                    }
+                ];
+            } else {
+                container.innerHTML = '';
+            }
+            
+            matches.forEach(match => {
+                const matchTime = new Date(match.fixture.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const teamA = match.teams.home.name;
+                const teamB = match.teams.away.name;
+                const teamAShort = teamA.substring(0, 3).toUpperCase();
+                const teamBShort = teamB.substring(0, 3).toUpperCase();
+                
+                // Generate random predictions for demonstration
+                const confidence = Math.floor(Math.random() * 30) + 60; // 60-90%
+                const confidenceClass = confidence >= 75 ? 'high-confidence' : 
+                                      confidence >= 60 ? 'medium-confidence' : 'low-confidence';
+                
+                const predictionType = ["Home Win", "Away Win", "Draw", "BTTS Yes", "BTTS No", "Over 2.5", "Under 2.5"][Math.floor(Math.random() * 7)];
+                const matchbet = ["1", "2", "X"][Math.floor(Math.random() * 3)];
+                const btts = ["Yes", "No"][Math.floor(Math.random() * 2)];
+                
+                const predictionHTML = `
+                    <div class="prediction-card">
+                        <div class="match-header">
+                            <div class="league">
+                                <i class="fas fa-trophy"></i> ${match.league.name}
+                                <span style="font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 2px 5px; border-radius: 10px;">
+                                    Hollywood Bets + Betway
+                                </span>
+                            </div>
+                            <div class="match-time">${matchTime} GMT</div>
+                        </div>
+                        <div class="teams">
+                            <div class="team">
+                                <div class="team-logo">${teamAShort}</div>
+                                <div class="team-name">${teamA}</div>
+                            </div>
+                            <div class="vs">VS</div>
+                            <div class="team">
+                                <div class="team-logo">${teamBShort}</div>
+                                <div class="team-name">${teamB}</div>
+                            </div>
+                        </div>
+                        <div class="prediction-details">
+                            <div class="prediction-header">
+                                <span>AI Prediction</span>
+                                <span class="ai-badge">${Math.floor(Math.random() * 10) + 85}% ACCURACY</span>
+                            </div>
+                            <div class="factors">
+                                <div class="factor">
+                                    <span class="factor-name">Form</span>
+                                    <span class="factor-value positive">${teamA} (WWLWW) vs ${teamB} (WLWWW)</span>
+                                </div>
+                                <div class="factor">
+                                    <span class="factor-name">Injuries</span>
+                                    <span class="factor-value negative">${teamB}: ${Math.floor(Math.random() * 3) + 1} key players</span>
+                                </div>
+                                <div class="factor">
+                                    <span class="factor-name">BTTS</span>
+                                    <span class="factor-value positive">${Math.floor(Math.random() * 30) + 60}% Probability</span>
+                                </div>
+                                <div class="factor">
+                                    <span class="factor-name">Weather</span>
+                                    <span class="factor-value neutral">Clear, ${Math.floor(Math.random() * 15) + 5}°C</span>
+                                </div>
+                            </div>
+                            <div class="prediction-result">
+                                <div class="result-type">${predictionType}</div>
+                                <div class="confidence">
+                                    <span>${confidence}%</span>
+                                    <div class="confidence-level">
+                                        <div class="confidence-fill ${confidenceClass}" style="width: ${confidence}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.8rem; color: #666;">Matchbet</div>
+                                    <div style="font-weight: 700; font-size: 1.1rem;">${matchbet === '1' ? teamA + ' Win' : matchbet === '2' ? teamB + ' Win' : 'Draw'}</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.8rem; color: #666;">BTTS</div>
+                                    <div style="font-weight: 700; font-size: 1.1rem;">${btts}</div>
+                                </div>
+                            </div>
+                            <div class="odds-comparison">
+                                <div class="odds-provider">
+                                    <div class="provider-name">Hollywood Bets</div>
+                                    <div class="odds-value">${(Math.random() + 1.5).toFixed(2)}</div>
+                                </div>
+                                <div class="odds-provider">
+                                    <div class="provider-name">Betway</div>
+                                    <div class="odds-value">${(Math.random() + 1.5).toFixed(2)}</div>
+                                </div>
+                                <div class="odds-provider">
+                                    <div class="provider-name">Pinnacle</div>
+                                    <div class="odds-value value-bet">${(Math.random() + 1.8).toFixed(2)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.innerHTML += predictionHTML;
+            });
+        }
+
+        // Function to render insights
+        function renderInsights() {
+            const container = document.getElementById('insights-container');
+            container.innerHTML = '';
+            
+            const insights = [
+                {
+                    title: "Top Value Bet",
+                    content: "Based on our AI analysis, the highest value bet today is BTTS in Arsenal vs Man City with an expected value of 18%."
+                },
+                {
+                    title: "Biggest Mismatch",
+                    content: "Real Madrid vs Barcelona shows the largest performance gap in midfield control (63% vs 37%)."
+                },
+                {
+                    title: "Weather Impact",
+                    content: "Clear conditions across all major matches today - minimal weather impact expected."
+                },
+                {
+                    title: "Injury Alert",
+                    content: "Man City missing 3 key defenders increases likelihood of both teams scoring."
+                }
+            ];
+            
+            insights.forEach(insight => {
+                const insightHTML = `
+                    <div class="insight-card">
+                        <h3>${insight.title}</h3>
+                        <p>${insight.content}</p>
+                    </div>
+                `;
+                
+                container.innerHTML += insightHTML;
+            });
+        }
+
+        // Function to simulate real-time data updates
+        function updateData() {
+            // In a real implementation, this would fetch new data from the API
+            console.log('Data updated at:', new Date().toLocaleTimeString());
+            updateLastUpdateTime();
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', async function() {
+            updateCurrentDate();
+            updateLastUpdateTime();
+            
+            // Initialize the Synthetic Intelligence team
+            SITeam.init();
+            
+            // Fetch today's matches from API
+            const matches = await fetchTodaysMatches();
+            
+            // After SI process completes, render predictions
+            setTimeout(() => {
+                renderPredictions(matches);
+                renderInsights();
+            }, 8000);
+            
+            // Set up real-time updates every 2 minutes
+            setInterval(updateData, 120000);
+            
+            // Add event listeners for buttons
+            document.getElementById('apply-filters').addEventListener('click', function() {
+                // In a real implementation, this would re-fetch data with filters applied
+                alert('Filters applied successfully!');
+            });
+            
+            document.getElementById('apply-filters-top').addEventListener('click', function() {
+                // In a real implementation, this would re-fetch data with filters applied
+                alert('Filters applied successfully!');
+            });
+            
+            document.getElementById('prev-day').addEventListener('click', function() {
+                alert('Showing predictions for yesterday');
+            });
+            
+            document.getElementById('next-day').addEventListener('click', function() {
+                alert('Showing predictions for tomorrow');
+            });
+            
+            // Add event listeners for bookmaker checkboxes
+            document.getElementById('hollywood-bets').addEventListener('change', function() {
+                // In a real implementation, this would filter the displayed matches
+                console.log('Hollywood Bets filter changed');
+            });
+            
+            document.getElementById('betway').addEventListener('change', function() {
+                // In a real implementation, this would filter the displayed matches
+                console.log('Betway filter changed');
+            });
+            
+            // Simulate API connections
+            console.log('Connecting to Football API...');
+        });
+    </script>
+</body>
+</html>
